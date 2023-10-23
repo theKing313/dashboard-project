@@ -20,6 +20,7 @@ export default function RootLayout({
       <body>
         <Providers>{children}</Providers>
       </body>
+      <script type="text/javascript" src="https://www.turnjs.com/lib/turn.min.js "></script> 
     </html>
   )
 }
