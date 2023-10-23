@@ -73,6 +73,7 @@ function filterEntry(entry: any, id: number, payload: any) {
 function changeEntry(entry: any, id: number, payload: any) {
     return (
         entry?.child?.map((entry: TEntryChild, index: number) => {
+
             if (Number(id) === Number(entry.id)) {
                 return (
                     entry.rowName = payload.rowName,
@@ -80,12 +81,13 @@ function changeEntry(entry: any, id: number, payload: any) {
                     entry.materials = payload.materials,
                     entry.overheads = payload.overheads,
                     entry.estimatedProfit = payload.estimatedProfit,
-                    entry.child = []
+                    entry.child = entry.child.length > 0 ? entry.child : []
                 )
             }
-            if (entry.child) {
+            if (entry.child.length > 0) {
                 return changeEntry(entry, id, payload)
             }
+
         })
     )
 
@@ -94,7 +96,7 @@ function changeEntry(entry: any, id: number, payload: any) {
 export const deleteItem = createAsyncThunk("delete/product", async (itemID: any, thunkApi) => {
 
     try {
-        const response = await axios.delete(`http://185.244.172.108:8081/v1/outlay-rows/entity/${ID}/row/${itemID}/delete`)
+        const response = await axios.delete(`https://185.244.172.108:8081/v1/outlay-rows/entity/${ID}/row/${itemID}/delete`)
         if (response.data) {
 
             return { ...response.data, parentId: itemID };
@@ -108,7 +110,7 @@ export const changeItem = createAsyncThunk("change/product", async (newItem: any
 
     try {
 
-        const response = await axios.post(`http://185.244.172.108:8081/v1/outlay-rows/entity/${ID}/row/${newItem.id}/update`,
+        const response = await axios.post(`https://185.244.172.108:8081/v1/outlay-rows/entity/${ID}/row/${newItem.id}/update`,
             newItem.item, {
             headers: {
                 'Content-Type': 'application/json'
@@ -129,7 +131,7 @@ export const changeItem = createAsyncThunk("change/product", async (newItem: any
 export const getAllItems = createAsyncThunk("get/product", async () => {
 
     try {
-        const response = await axios.get(`http://185.244.172.108:8081/v1/outlay-rows/entity/${ID}/row/list`)
+        const response = await axios.get(`https://185.244.172.108:8081/v1/outlay-rows/entity/${ID}/row/list`)
         if (response.data) {
             return response.data;
         }
@@ -139,7 +141,7 @@ export const getAllItems = createAsyncThunk("get/product", async () => {
 });
 export const setNewItem = createAsyncThunk("set/product", async (newItem: any, thunkApi) => {
     try {
-        const response = await axios.post(`http://185.244.172.108:8081/v1/outlay-rows/entity/${ID}/row/create`,
+        const response = await axios.post(`https://185.244.172.108:8081/v1/outlay-rows/entity/${ID}/row/create`,
             newItem, {
             headers: {
                 'Content-Type': 'application/json'
@@ -190,7 +192,6 @@ export const dashBoard = createSlice({
                 currentItems.map((item: TEntry) => {
                     console.log(sortedArr)
                     console.log(item.child)
-
                     s = item
                     console.log(current(item))
                     state.items = sortedArr;
@@ -262,3 +263,4 @@ export const {
     createNewItem,
 } = dashBoard.actions;
 export default dashBoard.reducer;
+
